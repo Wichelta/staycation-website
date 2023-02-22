@@ -30,18 +30,20 @@
                             <%= category[i].name %>
                         </td>
                         <td>
-                            <a href="javascript:void()" type="button" class="btn btn-warning btn-icon-split btn-sm button-update" data-id="<%= category[i].id %>" data-name="<%= category[i].name %>">
-                                <span class="icon text-white-50">
-                                    <i class="fas fa-edit"></i>
-                                </span>
-                                <span class="text">Edit</span>
-                            </a>
-                            <a href="#" class="btn btn-danger btn-icon-split btn-sm">
-                                <span class="icon text-white-50">
-                                    <i class="fas fa-trash"></i>
-                                </span>
-                                <span class="text">Delete</span>
-                            </a>
+                            <form action="/admin/category/<%= category[i].id %>?_method=DELETE" method="POST">
+                                <a href="javascript:void()" type="button" class="btn btn-warning btn-icon-split btn-sm button-update" data-id="<%= category[i].id %>" data-name="<%= category[i].name %>">
+                                    <span class="icon text-white-50">
+                                        <i class="fas fa-edit"></i>
+                                    </span>
+                                    <span class="text">Edit</span>
+                                </a>
+                                <button type="submit" class="btn btn-danger btn-icon-split btn-sm">
+                                    <span class="icon text-white-50">
+                                        <i class="fas fa-trash"></i>
+                                    </span>
+                                    <span class="text">Delete</span>
+                                </button>
+                            </form>
                         </td>
                     </tr>
                     <% } %>
