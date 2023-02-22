@@ -3,15 +3,7 @@
 
 <head>
 
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
-
-    <title>Staycation - Payment</title>
-
-    <%- include('../../partials/style.ejs') %>
+    <%- include('../../partials/header.ejs') %>
 
 </head>
 
@@ -33,8 +25,10 @@
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
 
+                    <%- include('../../partials/message') %>
+
                     <!-- Page Heading -->
-                    <h1 class="h3 mb-2 text-gray-800">Payment</h1>
+                    <h1 class="h3 mb-2 text-gray-800">Payment Method</h1>
 
                     <%- include('table_payment.ejs') %>
 
@@ -57,9 +51,27 @@
         <i class="fas fa-angle-up"></i>
     </a>
 
+    <%- include('add_modal.ejs') %>
+
+    <%- include('edit_modal.ejs') %>
+
     <%- include('../../partials/logout_modal.ejs') %>
 
     <%- include('../../partials/javascript.ejs') %>
+
+    <script>
+        $('#dataTable').on('click', '.button-update', function() {
+            let id = $(this).data('id')
+            let bankName = $(this).data('bankname')
+            let accountNumber = $(this).data('accountnumber')
+            let accountName = $(this).data('accountname')
+            $('#edit-modal').modal('show')
+            $('.id').val(id)
+            $('.bankName').val(bankName)
+            $('.accountNumber').val(accountNumber)
+            $('.accountName').val(accountName)
+        })
+    </script>
 
 </body>
 

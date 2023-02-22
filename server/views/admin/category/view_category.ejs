@@ -3,15 +3,7 @@
 
 <head>
 
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
-
-    <title>Staycation - Category</title>
-
-    <%- include('../../partials/style.ejs') %>
+    <%- include('../../partials/header.ejs') %>
 
 </head>
 
@@ -32,6 +24,8 @@
 
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
+
+                    <%- include('../../partials/message') %>
 
                     <!-- Page Heading -->
                     <h1 class="h3 mb-2 text-gray-800">Category</h1>
@@ -60,6 +54,7 @@
     <%- include('add_modal.ejs') %>
 
     <%- include('edit_modal.ejs') %>
+
 
     <%- include('../../partials/logout_modal.ejs') %>
 

@@ -8,11 +8,16 @@ const paymentSchema = new mongoose.Schema({
     accountNumber: {
         type: String,
         required: true,
+        unique: true,
     },
     accountName: {
         type: String,
         required: true,
     },
+    imageUrl: {
+        type: String,
+        required: true,
+    }
 })
 
 module.exports = mongoose.model('Payment', paymentSchema)
