@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 const { ObjectId } = mongoose.Schema
 
-const itemSchema = new mongoose.Schema({
+const propertySchema = new mongoose.Schema({
     title: {
         type: String,
         required: true,
@@ -10,13 +10,13 @@ const itemSchema = new mongoose.Schema({
         type: Number,
         required: true,
     },
-    country: {
-        type: String,
-        default: 'Indonesia',
-    },
     city: {
         type: String,
         required: true,
+    },
+    country: {
+        type: String,
+        default: 'Indonesia',
     },
     isPopular: {
         type: Boolean,
@@ -39,4 +39,4 @@ const itemSchema = new mongoose.Schema({
     }]
 })
 
-module.exports = mongoose.model('Item', itemSchema)
+module.exports = mongoose.model('Property', propertySchema)

@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-const bankSchema = new mongoose.Schema({
+const paymentSchema = new mongoose.Schema({
     bankName: {
         type: String,
         required: true,
@@ -15,4 +15,4 @@ const bankSchema = new mongoose.Schema({
     },
 })
 
-module.exports = mongoose.model('Bank', bankSchema)
+module.exports = mongoose.model('Payment', paymentSchema)
