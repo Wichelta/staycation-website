@@ -1,6 +1,6 @@
 const router = require('express').Router()
 const adminController = require('../controllers/adminController')
-const { upload } = require('../middlewares/multer')
+const { upload, uploadMultiple } = require('../middlewares/multer')
 
 router.get('/dashboard', adminController.viewDashboard)
 
@@ -10,7 +10,12 @@ router.post('/category', adminController.addCategory)
 router.put('/category', adminController.editCategory)
 router.delete('/category/:id', adminController.deleteCategory)
 
+// Property Endpoint
 router.get('/property', adminController.viewProperty)
+router.get('/property/show-image/:id', adminController.showImageProperty)
+router.post('/property', uploadMultiple, adminController.addProperty)
+router.get('/property/:id', adminController.showEditProperty)
+router.put('/property/:id', uploadMultiple, adminController.editProperty)
 
 // Payment Endpoint
 router.get('/payment', adminController.viewPayment)

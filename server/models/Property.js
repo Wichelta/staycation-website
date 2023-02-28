@@ -25,6 +25,10 @@ const propertySchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    categoryId: {
+        type: ObjectId,
+        ref: 'Category'
+    },
     imageId: [{
         type: ObjectId,
         ref: 'Image',
@@ -36,7 +40,7 @@ const propertySchema = new mongoose.Schema({
     activityId: [{
         type: ObjectId,
         ref: 'Activity',
-    }]
+    }],
 })
 
 module.exports = mongoose.model('Property', propertySchema)

@@ -6,7 +6,7 @@
             <span class="icon text-white-50">
                 <i class="fas fa-plus"></i>
             </span>
-            <span class="text">Add Data</span>
+            <span class="text">Add Payment Method</span>
         </button>
     </div>
     <div class="card-body">
@@ -38,7 +38,7 @@
                             <%= payment[i].accountName %>
                         </td>
                         <td>
-                            <img src="http://localhost:3000/<%= payment[i].imageUrl %>" alt="imageUrl" height="70px" width="70px">
+                            <img src="http://localhost:3000/<%= payment[i].imageUrl %>" alt="imageUrl" width="70px">
                         </td>
                         <td>
                             <form id="delete-form-<%= payment[i].id %>" action="/admin/payment/<%= payment[i].id %>?_method=DELETE" method="POST">

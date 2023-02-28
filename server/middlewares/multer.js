@@ -5,14 +5,14 @@ const fs = require("fs");
 
 const storageMultiple = multer.diskStorage({
     destination: function (req, file, cb) {
-        var dir = 'public/images';
+        var dir = 'public/images/property';
         if (!fs.existsSync(dir)) {
             fs.mkdirSync(dir);
         }
         cb(null, dir);
     },
     filename: (req, file, cb) => {
-        cb(null, Date.now() + path.extname(file.originalname));
+        cb(null, 'property_' + Date.now() + path.extname(file.originalname));
     }
 })
 
@@ -27,9 +27,9 @@ const uploadMultiple = multer({
 
 // Set storage engine
 const storage = multer.diskStorage({
-    destination: "public/images",
+    destination: "public/images/payment",
     filename: function (req, file, cb) {
-        cb(null, Date.now() + path.extname(file.originalname));
+        cb(null, 'payment_' + Date.now() + path.extname(file.originalname));
     }
 });
 

@@ -1,5 +1,7 @@
 const Category = require('../models/Category')
 const Payment = require('../models/Payment')
+const Property = require('../models/Property')
+const Image = require('../models/Image')
 
 const fs = require('fs-extra')
 const path = require('path')
@@ -8,6 +10,7 @@ module.exports = {
     viewDashboard: (req, res) => {
         res.render('admin/dashboard/view_dashboard', { title: "Dashboard" })
     },
+
 
     // Category Method
     viewCategory: async (req, res) => {
@@ -84,9 +87,167 @@ module.exports = {
     },
     // End Category Method
 
-    viewProperty: (req, res) => {
-        res.render('admin/property/view_property', { title: "Property" })
+
+    // Property Method
+    viewProperty: async (req, res) => {
+        try {
+            const property = await Property.find()
+                .populate({ path: 'imageId', select: 'id imageUrl' })
+                .populate({ path: 'categoryId', select: 'id name' })
+            const category = await Category.find()
+            const alertStatusMessage = req.flash('alertStatusMessage')
+            const alertName = req.flash('alertName')
+            const alertMessage = req.flash('alertMessage')
+            const alertStatus = req.flash('alertStatus')
+            const alert = { statusMessage: alertStatusMessage, name: alertName, message: alertMessage, status: alertStatus }
+            res.render('admin/property/view_property', {
+                property,
+                category,
+                action: 'view',
+                alert,
+                title: "Property"
+            })
+        } catch (error) {
+            req.flash('alertStatusMessage', 'Failed!')
+            req.flash('alertMessage', ` ${error.message}`)
+            req.flash('alertStatus', 'danger')
+            res.redirect('/admin/property')
+        }
     },
+
+    addProperty: async (req, res) => {
+        try {
+            const { categoryId, title, price, city, about } = req.body
+            if (req.files.length > 0) {
+                const category = await Category.findOne({ _id: categoryId })
+                const newProperty = {
+                    categoryId: category._id,
+                    title,
+                    description: about,
+                    price,
+                    city,
+                }
+                const property = await Property.create(newProperty)
+                category.propertyId.push({ _id: property._id })
+                await category.save()
+                for (let i = 0; i < req.files.length; i++) {
+                    const imageSave = await Image.create({ imageUrl: `images/property/${req.files[i].filename}` })
+                    property.imageId.push({ _id: imageSave._id })
+                    await property.save()
+                }
+                req.flash('alertStatusMessage', 'Success!')
+                req.flash('alertName', ` ${title}`)
+                req.flash('alertMessage', ' has been added to the Property.')
+                req.flash('alertStatus', 'success')
+                res.redirect('/admin/property')
+            }
+        } catch (error) {
+            req.flash('alertStatusMessage', 'Failed!')
+            req.flash('alertMessage', ` ${error.message}`)
+            req.flash('alertStatus', 'danger')
+            res.redirect('/admin/property')
+        }
+    },
+
+    showImageProperty: async (req, res) => {
+        try {
+            const { id } = req.params
+            const property = await Property.findOne({ _id: id })
+                .populate({ path: 'imageId', select: 'id imageUrl' })
+            const alertStatusMessage = req.flash('alertStatusMessage')
+            const alertName = req.flash('alertName')
+            const alertMessage = req.flash('alertMessage')
+            const alertStatus = req.flash('alertStatus')
+            const alert = { statusMessage: alertStatusMessage, name: alertName, message: alertMessage, status: alertStatus }
+            res.render('admin/property/view_property', {
+                property,
+                alert,
+                action: 'show image',
+                title: "Image Property"
+            })
+        } catch (error) {
+            req.flash('alertStatusMessage', 'Failed!')
+            req.flash('alertMessage', ` ${error.message}`)
+            req.flash('alertStatus', 'danger')
+            res.redirect('/admin/property')
+        }
+    },
+
+    showEditProperty: async (req, res) => {
+        try {
+            const { id } = req.params
+            const property = await Property.findOne({ _id: id })
+                .populate({ path: 'imageId', select: 'id imageUrl' })
+                .populate({ path: 'categoryId', select: 'id name' })
+            const category = await Category.find()
+            const alertStatusMessage = req.flash('alertStatusMessage')
+            const alertName = req.flash('alertName')
+            const alertMessage = req.flash('alertMessage')
+            const alertStatus = req.flash('alertStatus')
+            const alert = { statusMessage: alertStatusMessage, name: alertName, message: alertMessage, status: alertStatus }
+            res.render('admin/property/view_property', {
+                property,
+                category,
+                alert,
+                action: 'edit',
+                title: "Edit Property"
+            })
+        } catch (error) {
+            req.flash('alertStatusMessage', 'Failed!')
+            req.flash('alertMessage', ` ${error.message}`)
+            req.flash('alertStatus', 'danger')
+            res.redirect('/admin/property')
+        }
+    },
+
+    editProperty: async (req, res) => {
+        try {
+            const { id } = req.params
+            const { categoryId, title, price, city, about } = req.body
+            const property = await Property.findOne({ _id: id })
+                .populate({ path: 'imageId', select: 'id imageUrl' })
+                .populate({ path: 'categoryId', select: 'id name' })
+
+            if (req.files.length > 0) {
+                for (let i = 0; i < property.imageId.length; i++) {
+                    const imageUpdate = await Image.findOne({ _id: property.imageId[i]._id })
+                    await fs.unlink(path.join(`public/${imageUpdate.imageUrl}`))
+                    imageUpdate.imageUrl = `images/property/${req.files[i].filename}`
+                    await imageUpdate.save()
+                }
+                property.title = title
+                property.price = price
+                property.city = city
+                property.description = about
+                property.categoryId = categoryId
+                await property.save()
+                req.flash('alertStatusMessage', 'Success! Property ')
+                req.flash('alertName', ` ${property.title}`)
+                req.flash('alertMessage', ' has been updated.')
+                req.flash('alertStatus', 'success')
+                res.redirect('/admin/property')
+            } else {
+                property.title = title
+                property.price = price
+                property.city = city
+                property.description = about
+                property.categoryId = categoryId
+                await property.save()
+                req.flash('alertStatusMessage', 'Success! Property ')
+                req.flash('alertName', ` ${property.title}`)
+                req.flash('alertMessage', ' has been updated.')
+                req.flash('alertStatus', 'success')
+                res.redirect('/admin/property')
+            }
+        } catch (error) {
+            req.flash('alertStatusMessage', 'Failed!')
+            req.flash('alertMessage', ` ${error.message}`)
+            req.flash('alertStatus', 'danger')
+            res.redirect('/admin/property')
+        }
+    },
+
+    // End Property Method
 
     // Payment Method
     viewPayment: async (req, res) => {
@@ -109,7 +270,7 @@ module.exports = {
     addPayment: async (req, res) => {
         try {
             const { bankName, accountNumber, accountName } = req.body
-            await Payment.create({ bankName, accountNumber, accountName, imageUrl: `images/${req.file.filename}` })
+            await Payment.create({ bankName, accountNumber, accountName, imageUrl: `images/payment/${req.file.filename}` })
             req.flash('alertStatusMessage', 'Success!')
             req.flash('alertName', ` ${bankName}`)
             req.flash('alertMessage', ' has been added to the Payment Method.')
@@ -131,10 +292,9 @@ module.exports = {
                 payment.bankName = bankName
                 payment.accountNumber = accountNumber
                 payment.accountName = accountName
-                const oldPaymentName = payment.bankName // retrieve the old name of the bank name
                 await payment.save()
-                req.flash('alertStatusMessage', 'Success!')
-                req.flash('alertName', ` ${oldPaymentName}`)
+                req.flash('alertStatusMessage', 'Success! Payment method ')
+                req.flash('alertName', ` ${payment.bankName}`)
                 req.flash('alertMessage', ' has been updated.')
                 req.flash('alertStatus', 'success')
                 res.redirect('/admin/payment')
@@ -143,11 +303,10 @@ module.exports = {
                 payment.bankName = bankName
                 payment.accountNumber = accountNumber
                 payment.accountName = accountName
-                payment.imageUrl = `images/${req.file.filename}`
-                const oldPaymentName = payment.bankName // retrieve the old name of the bank name
+                payment.imageUrl = `images/payment/${req.file.filename}`
                 await payment.save()
-                req.flash('alertStatusMessage', 'Success!')
-                req.flash('alertName', ` ${oldPaymentName}`)
+                req.flash('alertStatusMessage', 'Success! Payment method ')
+                req.flash('alertName', ` ${payment.bankName}`)
                 req.flash('alertMessage', ' has been updated.')
                 req.flash('alertStatus', 'success')
                 res.redirect('/admin/payment')
@@ -179,8 +338,8 @@ module.exports = {
             res.redirect('/admin/payment')
         }
     },
-
     // End Payment Method
+
 
     viewBooking: (req, res) => {
         res.render('admin/booking/view_booking', { title: "Booking" })

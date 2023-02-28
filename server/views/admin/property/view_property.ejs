@@ -25,11 +25,58 @@
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
 
+                    <%- include('../../partials/message') %>
+
+                    <% if (action == 'view') { %>
+
                     <!-- Page Heading -->
                     <h1 class="h3 mb-2 text-gray-800">Property</h1>
 
-                    <%- include('table_property.ejs') %>
+                    <ul class="nav nav-tabs" id="myTab" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" id="show-property-tab" data-toggle="tab" href="#show-property" role="tab">Property</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="add-property-tab" data-toggle="tab" href="#add-property" role="tab">Add Property</a>
+                        </li>
+                    </ul>
 
+                    <div class="tab-content" id="myTabContent">
+                        <%- include('show_table_property.ejs') %>
+                        <%- include('add_property.ejs') %>
+                    </div>
+
+                    <% } else if (action == 'show image') { %>
+
+                    <!-- Page Heading -->
+                    <h1 class="h3 mb-2 text-gray-800">Property : <strong><%= property.title %></strong></h1>
+
+                    <ul class="nav nav-tabs" id="myTab" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" id="show-property-tab" data-toggle="tab" href="#show-image" role="tab">Property Images</a>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content" id="myTabContent">
+                        <%- include('show_image_property.ejs') %>
+                    </div>
+
+                    <% } else { %>
+
+                    <!-- Page Heading -->
+                    <h1 class="h3 mb-2 text-gray-800">Property : <strong><%= property.title %></strong></h1>
+
+                    <ul class="nav nav-tabs" id="myTab" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" id="show-property-tab" data-toggle="tab" href="#edit-property" role="tab">Update Property</a>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content" id="myTabContent">
+                        <%- include('edit_property.ejs') %>
+                    </div>
+
+                    <% } %>
                 </div>
                 <!-- /.container-fluid -->
 
@@ -52,6 +99,10 @@
     <%- include('../../partials/logout_modal.ejs') %>
 
     <%- include('../../partials/javascript.ejs') %>
+
+    <script>
+        CKEDITOR.replace('about')
+    </script>
 
 </body>
 
